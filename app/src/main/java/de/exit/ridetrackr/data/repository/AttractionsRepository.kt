@@ -86,10 +86,12 @@ class AttractionsRepository @Inject constructor(
                     if (report != null) {
                         val minutesAgo = ((now - report.reportedAtMillis) / 60000L).coerceAtLeast(0)
                         val agoText = if (minutesAgo < 1) "gerade eben" else "vor $minutesAgo Min"
+                        val timeFormatted = java.text.SimpleDateFormat("HH:mm", java.util.Locale.GERMANY)
+                            .format(java.util.Date(report.reportedAtMillis))
                         attr.copy(
                             waitTimeMinutes = report.waitTimeMinutes,
                             isCrossVerified = true,
-                            comparisonNote = "Eigene Vor-Ort-Meldung ($agoText): ${report.waitTimeMinutes} min",
+                            comparisonNote = "Eigene Vor-Ort-Meldung ($timeFormatted Uhr • $agoText): ${report.waitTimeMinutes} min",
                             lastUpdatedMillis = report.reportedAtMillis
                         )
                     } else {

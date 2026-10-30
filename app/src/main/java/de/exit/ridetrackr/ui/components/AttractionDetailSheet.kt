@@ -304,7 +304,9 @@ fun AttractionDetailSheet(
             val noteToShow = if (latestReport != null) {
                 val minAgo = ((System.currentTimeMillis() - latestReport!!.reportedAtMillis) / 60000L).coerceAtLeast(0)
                 val ago = if (minAgo < 1) "gerade eben" else "vor $minAgo Min"
-                "${strings.ownReportBadge} ($ago): ${latestReport!!.waitTimeMinutes} Min"
+                val timeStr = java.text.SimpleDateFormat("HH:mm", java.util.Locale.GERMANY)
+                    .format(java.util.Date(latestReport!!.reportedAtMillis))
+                "${strings.ownReportBadge} ($timeStr Uhr • $ago): ${latestReport!!.waitTimeMinutes} Min"
             } else {
                 attraction.comparisonNote
             }
@@ -377,7 +379,9 @@ fun AttractionDetailSheet(
                             val subtitle = latestReport?.let {
                                 val minAgo = ((System.currentTimeMillis() - it.reportedAtMillis) / 60000L).coerceAtLeast(0)
                                 val ago = if (minAgo < 1) "gerade eben" else "vor $minAgo Min"
-                                "Deine Meldung: ${it.waitTimeMinutes} Min ($ago)"
+                                val dateFormatted = java.text.SimpleDateFormat("dd.MM.yyyy, HH:mm", java.util.Locale.GERMANY)
+                                    .format(java.util.Date(it.reportedAtMillis))
+                                "Deine Meldung: ${it.waitTimeMinutes} Min ($dateFormatted Uhr • $ago)"
                             } ?: strings.reportWaitTimeSubtitle
                             Text(
                                 text = subtitle,

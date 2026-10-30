@@ -5,7 +5,10 @@
       "attractionId": "tripsdrill-karacho",
       "attractionName": "Karacho",
       "waitTimeMinutes": 20,
-      "reportedAtMillis": 1793361600000,
+      "reportedAtMillis": 1793363145000,
+      "reportedAt": "2026-10-30 13:25:45",
+      "date": "2026-10-30",
+      "time": "13:25:45",
       "note": "Sonnig, normale Abfertigung"
     },
     "tripsdrill-mammut": {
@@ -13,8 +16,33 @@
       "attractionId": "tripsdrill-mammut",
       "attractionName": "Mammut",
       "waitTimeMinutes": 15,
-      "reportedAtMillis": 1793361600000,
+      "reportedAtMillis": 1793363145000,
+      "reportedAt": "2026-10-30 13:25:45",
+      "date": "2026-10-30",
+      "time": "13:25:45",
       "note": "Zwei-Zug-Betrieb"
+    },
+    "tripsdrill-hals-ueber-kopf": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-hals-ueber-kopf",
+      "attractionName": "Hals-über-Kopf",
+      "waitTimeMinutes": 25,
+      "reportedAtMillis": 1793363145000,
+      "reportedAt": "2026-10-30 13:25:45",
+      "date": "2026-10-30",
+      "time": "13:25:45",
+      "note": "Flotter Einlass"
+    },
+    "tripsdrill-volldampf": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-volldampf",
+      "attractionName": "Volldampf",
+      "waitTimeMinutes": 10,
+      "reportedAtMillis": 1793363145000,
+      "reportedAt": "2026-10-30 13:25:45",
+      "date": "2026-10-30",
+      "time": "13:25:45",
+      "note": "Geringer Andrang"
     }
   }
 }

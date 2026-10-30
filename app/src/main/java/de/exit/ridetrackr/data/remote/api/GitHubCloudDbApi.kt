@@ -32,6 +32,9 @@ data class LiveReportDto(
     val attractionName: String,
     val waitTimeMinutes: Int,
     val reportedAtMillis: Long,
+    val reportedAt: String? = null,
+    val date: String? = null,
+    val time: String? = null,
     val note: String? = null,
     val deviceId: String? = null
 )

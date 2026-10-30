@@ -99,6 +99,11 @@ class UserReportsRepository @Inject constructor(
 
         // 2. Publish to Firebase Cloud Database if available
         try {
+            val nowDate = java.util.Date(now)
+            val sdfFull = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.GERMANY)
+            val sdfDate = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.GERMANY)
+            val sdfTime = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.GERMANY)
+
             firebaseApi.submitReport(
                 parkId = parkId,
                 attractionId = attractionId,
@@ -108,6 +113,9 @@ class UserReportsRepository @Inject constructor(
                     attractionName = attractionName,
                     waitTimeMinutes = waitTimeMinutes,
                     reportedAtMillis = now,
+                    reportedAt = sdfFull.format(nowDate),
+                    date = sdfDate.format(nowDate),
+                    time = sdfTime.format(nowDate),
                     note = note
                 )
             )
