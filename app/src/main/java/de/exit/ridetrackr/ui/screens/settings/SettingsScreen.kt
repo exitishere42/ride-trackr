@@ -64,6 +64,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import de.exit.ridetrackr.data.model.AppUpdateStatus
+import de.exit.ridetrackr.ui.components.MarkdownText
 import de.exit.ridetrackr.ui.i18n.LocalAppStrings
 import de.exit.ridetrackr.ui.theme.MaterialYouPalettes
 
@@ -517,12 +518,18 @@ fun SettingsScreen(
                                     }
 
                                     status.releaseNotes?.let { notes ->
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        Text(
-                                            text = notes.take(250) + if (notes.length > 250) "..." else "",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.9f)
-                                        )
+                                        Spacer(modifier = Modifier.height(10.dp))
+                                        Surface(
+                                            shape = RoundedCornerShape(10.dp),
+                                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.35f),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            MarkdownText(
+                                                markdown = notes,
+                                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                modifier = Modifier.padding(12.dp)
+                                            )
+                                        }
                                     }
 
                                     Spacer(modifier = Modifier.height(12.dp))
