@@ -1,0 +1,20 @@
+{
+  "tripsdrill": {
+    "tripsdrill-karacho": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-karacho",
+      "attractionName": "Karacho",
+      "waitTimeMinutes": 20,
+      "reportedAtMillis": 1793361600000,
+      "note": "Sonnig, normale Abfertigung"
+    },
+    "tripsdrill-mammut": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-mammut",
+      "attractionName": "Mammut",
+      "waitTimeMinutes": 15,
+      "reportedAtMillis": 1793361600000,
+      "note": "Zwei-Zug-Betrieb"
+    }
+  }
+}
