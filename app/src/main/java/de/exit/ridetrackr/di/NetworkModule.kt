@@ -121,4 +121,16 @@ object NetworkModule {
             .build()
             .create(de.exit.ridetrackr.data.remote.api.GitHubCloudDbApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideGitHubReleasesApi(okHttpClient: OkHttpClient, json: Json): de.exit.ridetrackr.data.remote.api.GitHubReleasesApi {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+            .create(de.exit.ridetrackr.data.remote.api.GitHubReleasesApi::class.java)
+    }
 }

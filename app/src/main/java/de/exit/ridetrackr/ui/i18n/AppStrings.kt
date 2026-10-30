@@ -87,7 +87,17 @@ data class AppStrings(
     val dataSourcesTitle: String,
     val dataSourcesSubtitle: String,
     val appInfoTitle: String,
-    val appInfoSubtitle: String
+    val appInfoSubtitle: String,
+    // App Updates
+    val updatesTitle: String,
+    val updatesSubtitle: String,
+    val checkUpdates: String,
+    val checkingUpdates: String,
+    val upToDate: String,
+    val updateAvailable: String,
+    val downloadUpdate: String,
+    val updateError: String,
+    val currentVersionLabel: String
 )
 
 val StringsDe = AppStrings(
@@ -169,7 +179,16 @@ val StringsDe = AppStrings(
     dataSourcesTitle = "Datenquellen & Transparenz",
     dataSourcesSubtitle = "Ride Trackr aggregiert und verifiziert Live-Wartezeiten aus zwei unabhängigen Schnittstellen:",
     appInfoTitle = "Über Ride Trackr",
-    appInfoSubtitle = "Version 1.2.0 • Modern Android Development"
+    appInfoSubtitle = "Version 1.3.0 • Modern Android Development",
+    updatesTitle = "App-Updates",
+    updatesSubtitle = "Direkt online über GitHub Releases aktualisieren",
+    checkUpdates = "Auf Updates prüfen",
+    checkingUpdates = "Prüfe auf Updates...",
+    upToDate = "Die App ist auf dem neuesten Stand",
+    updateAvailable = "Neues Update verfügbar: v%s",
+    downloadUpdate = "Herunterladen & Installieren",
+    updateError = "Fehler beim Prüfen auf Updates",
+    currentVersionLabel = "Installierte Version: v%s"
 )
 
 val StringsEn = AppStrings(
@@ -251,7 +270,16 @@ val StringsEn = AppStrings(
     dataSourcesTitle = "Data Sources & Transparency",
     dataSourcesSubtitle = "Ride Trackr aggregates and verifies live wait times from two independent APIs:",
     appInfoTitle = "About Ride Trackr",
-    appInfoSubtitle = "Version 1.2.0 • Modern Android Development"
+    appInfoSubtitle = "Version 1.3.0 • Modern Android Development",
+    updatesTitle = "App Updates",
+    updatesSubtitle = "Update directly online via GitHub Releases",
+    checkUpdates = "Check for Updates",
+    checkingUpdates = "Checking for updates...",
+    upToDate = "The app is up to date",
+    updateAvailable = "New update available: v%s",
+    downloadUpdate = "Download & Install",
+    updateError = "Error checking for updates",
+    currentVersionLabel = "Installed version: v%s"
 )
 
 val LocalAppStrings = compositionLocalOf { StringsDe }

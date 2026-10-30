@@ -10,10 +10,15 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import de.exit.ridetrackr.BuildConfig
+import de.exit.ridetrackr.data.model.AppUpdateStatus
 import de.exit.ridetrackr.data.repository.SettingsRepository
+import de.exit.ridetrackr.data.repository.UpdateRepository
 import de.exit.ridetrackr.service.WaitTimeAlertWorker
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -30,8 +35,14 @@ data class SettingsUiState(
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val updateRepository: UpdateRepository
 ) : ViewModel() {
+
+    val currentVersion: String = BuildConfig.VERSION_NAME
+
+    private val _updateStatus = MutableStateFlow<AppUpdateStatus>(AppUpdateStatus.Idle)
+    val updateStatus: StateFlow<AppUpdateStatus> = _updateStatus.asStateFlow()
 
     val uiState: StateFlow<SettingsUiState> = combine(
         settingsRepository.alertsEnabled,
@@ -73,6 +84,14 @@ class SettingsViewModel @Inject constructor(
     fun setColorAccent(accent: String) {
         viewModelScope.launch {
             settingsRepository.setColorAccent(accent)
+        }
+    }
+
+    fun checkForUpdates() {
+        viewModelScope.launch {
+            _updateStatus.value = AppUpdateStatus.Checking
+            val result = updateRepository.checkForUpdate(currentVersion)
+            _updateStatus.value = result
         }
     }
 
