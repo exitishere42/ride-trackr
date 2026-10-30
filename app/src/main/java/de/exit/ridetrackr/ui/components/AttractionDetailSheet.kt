@@ -132,12 +132,73 @@ fun AttractionDetailSheet(
             var isImageLoaded by remember(wikiData?.imageUrl) { mutableStateOf(false) }
             var isImageError by remember(wikiData?.imageUrl) { mutableStateOf(false) }
 
-            // Wikipedia Hero Image (only rendered when available and successfully loaded)
+            // 1. Header with Hero Icon, Attraction Name & Close Button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val heroIcon = when (details.visualType) {
+                            CoasterVisualType.LAUNCH_COASTER -> Icons.Default.RocketLaunch
+                            CoasterVisualType.WATER_RIDE -> Icons.Default.DirectionsBoat
+                            CoasterVisualType.DROP_TOWER -> Icons.Default.Height
+                            else -> Icons.Default.LinearScale
+                        }
+                        Icon(
+                            imageVector = heroIcon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(14.dp))
+
+                    Column {
+                        Text(
+                            text = attraction.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        val subtitlePark = details.parkName ?: wikiData?.title
+                        subtitlePark?.let { pName ->
+                            Text(
+                                text = pName,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    }
+                }
+
+                IconButton(onClick = onDismiss) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = strings.close,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 2. Wikipedia Hero Image (placed below the Header)
             if (wikiData?.imageUrl != null && !isImageError) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(170.dp)
+                        .height(175.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                 ) {
@@ -182,67 +243,6 @@ fun AttractionDetailSheet(
                 }
                 if (isImageLoaded) {
                     Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-
-            // Header with Hero Icon & Close Button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (wikiData?.imageUrl == null || isImageError || !isImageLoaded) {
-                        Box(
-                            modifier = Modifier
-                                .size(52.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            val heroIcon = when (details.visualType) {
-                                CoasterVisualType.LAUNCH_COASTER -> Icons.Default.RocketLaunch
-                                CoasterVisualType.WATER_RIDE -> Icons.Default.DirectionsBoat
-                                CoasterVisualType.DROP_TOWER -> Icons.Default.Height
-                                else -> Icons.Default.LinearScale
-                            }
-                            Icon(
-                                imageVector = heroIcon,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(14.dp))
-                    }
-
-                    Column {
-                        Text(
-                            text = attraction.name,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        val subtitlePark = details.parkName ?: wikiData?.title
-                        subtitlePark?.let { pName ->
-                            Text(
-                                text = pName,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.outline
-                            )
-                        }
-                    }
-                }
-
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = strings.close,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
             }
 
