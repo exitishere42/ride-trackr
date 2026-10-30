@@ -50,9 +50,19 @@ class TripsdrillAttractionsTest {
         override suspend fun pruneOldReports(olderThanMillis: Long) {}
     }
 
+    private val fakeFirebaseApi = object : de.exit.ridetrackr.data.remote.api.FirebaseRealtimeDbApi {
+        override suspend fun getParkReports(parkId: String): Map<String, de.exit.ridetrackr.data.remote.api.FirebaseReportDto>? = null
+        override suspend fun submitReport(
+            parkId: String,
+            attractionId: String,
+            report: de.exit.ridetrackr.data.remote.api.FirebaseReportDto
+        ): de.exit.ridetrackr.data.remote.api.FirebaseReportDto = report
+        override suspend fun getAllReports(): Map<String, Map<String, de.exit.ridetrackr.data.remote.api.FirebaseReportDto>>? = null
+    }
+
     @Test
     fun testGetAttractions_returnsTripsdrillDynamicList() = runBlocking {
-        val userReportsRepo = UserReportsRepository(fakeUserReportsDao)
+        val userReportsRepo = UserReportsRepository(fakeUserReportsDao, fakeFirebaseApi)
         val repo = AttractionsRepository(
             themeParksApi = fakeThemeParks,
             wartezeitenApi = fakeWartezeiten,
@@ -73,7 +83,7 @@ class TripsdrillAttractionsTest {
 
     @Test
     fun testGetAttractions_appliesUserReportWhenAvailable() = runBlocking {
-        val userReportsRepo = UserReportsRepository(fakeUserReportsDao)
+        val userReportsRepo = UserReportsRepository(fakeUserReportsDao, fakeFirebaseApi)
         // Add a recent report for Karacho (40 min)
         fakeUserReportsDao.list.add(
             UserWaitTimeReportEntity(

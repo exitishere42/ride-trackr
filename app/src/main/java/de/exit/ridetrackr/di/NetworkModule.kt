@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.exit.ridetrackr.data.engine.PlausibilityEngine
+import de.exit.ridetrackr.data.remote.api.FirebaseRealtimeDbApi
 import de.exit.ridetrackr.data.remote.api.ThemeParksWikiApi
 import de.exit.ridetrackr.data.remote.api.WartezeitenApi
 import de.exit.ridetrackr.data.remote.api.WikipediaApi
@@ -95,5 +96,17 @@ object NetworkModule {
     @Singleton
     fun provideTripsdrillWaitTimeEngine(): de.exit.ridetrackr.data.engine.TripsdrillWaitTimeEngine {
         return de.exit.ridetrackr.data.engine.TripsdrillWaitTimeEngine()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRealtimeDbApi(okHttpClient: OkHttpClient, json: Json): FirebaseRealtimeDbApi {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl("https://ride-trackr-live-default-rtdb.europe-west1.firebasedatabase.app/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+            .create(FirebaseRealtimeDbApi::class.java)
     }
 }

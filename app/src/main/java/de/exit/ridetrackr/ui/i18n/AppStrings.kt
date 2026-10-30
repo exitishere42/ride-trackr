@@ -169,7 +169,7 @@ val StringsDe = AppStrings(
     dataSourcesTitle = "Datenquellen & Transparenz",
     dataSourcesSubtitle = "Ride Trackr aggregiert und verifiziert Live-Wartezeiten aus zwei unabhängigen Schnittstellen:",
     appInfoTitle = "Über Ride Trackr",
-    appInfoSubtitle = "Version 1.1.0 • Modern Android Development"
+    appInfoSubtitle = "Version 1.2.0 • Modern Android Development"
 )
 
 val StringsEn = AppStrings(
@@ -251,7 +251,7 @@ val StringsEn = AppStrings(
     dataSourcesTitle = "Data Sources & Transparency",
     dataSourcesSubtitle = "Ride Trackr aggregates and verifies live wait times from two independent APIs:",
     appInfoTitle = "About Ride Trackr",
-    appInfoSubtitle = "Version 1.1.0 • Modern Android Development"
+    appInfoSubtitle = "Version 1.2.0 • Modern Android Development"
 )
 
 val LocalAppStrings = compositionLocalOf { StringsDe }
