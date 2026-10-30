@@ -96,4 +96,66 @@ class TripsdrillWaitTimeEngineTest {
         assertTrue(list.all { it.status == AttractionStatus.CLOSED })
         assertTrue(list.all { it.waitTimeMinutes == null })
     }
+
+    @Test
+    fun testHalloweenLichtergaudiEventBoost() {
+        // October 30 at 17:30 during Lichtergaudi
+        val lichtergaudiTime = ZonedDateTime.of(2026, 10, 30, 17, 30, 0, 0, zone)
+        val regularTime = ZonedDateTime.of(2026, 9, 15, 17, 0, 0, 0, zone)
+
+        val eventList = engine.generateAttractions("tripsdrill", onlineCrowdLevel = 60.0, dateTime = lichtergaudiTime)
+        val regularList = engine.generateAttractions("tripsdrill", onlineCrowdLevel = 60.0, dateTime = regularTime)
+
+        val karachoEvent = eventList.first { it.name == "Karacho" }
+        val karachoRegular = regularList.first { it.name == "Karacho" }
+
+        // Must be open during Lichtergaudi evening!
+        assertEquals(AttractionStatus.OPERATING, karachoEvent.status)
+        assertNotNull(karachoEvent.waitTimeMinutes)
+
+        // Event wait time must be higher due to Lichtergaudi & Halloween popularity
+        assertTrue(
+            "Karacho während Lichtergaudi (${karachoEvent.waitTimeMinutes} min) muss höher sein als an regulären Tagen (${karachoRegular.waitTimeMinutes} min)",
+            karachoEvent.waitTimeMinutes!! > karachoRegular.waitTimeMinutes!!
+        )
+        assertTrue(karachoEvent.comparisonNote?.contains("Lichtergaudi") == true)
+    }
+
+    @Test
+    fun testDatabaseTrainingCalibration() {
+        val testTime = ZonedDateTime.of(2026, 10, 30, 17, 0, 0, 0, zone)
+
+        // Generate baseline without training data
+        val baselineList = engine.generateAttractions("tripsdrill", dateTime = testTime, trainingReports = emptyList())
+        val karachoBaseline = baselineList.first { it.name == "Karacho" }.waitTimeMinutes ?: 0
+
+        // Provide database training reports where users reported higher wait times (e.g. 55 min)
+        val training = listOf(
+            de.exit.ridetrackr.data.local.entity.UserWaitTimeReportEntity(
+                id = 1L,
+                parkId = "tripsdrill",
+                attractionId = "tripsdrill-karacho",
+                attractionName = "Karacho",
+                waitTimeMinutes = 55,
+                reportedAtMillis = testTime.toInstant().toEpochMilli() - 3600000L // 1 hour ago
+            ),
+            de.exit.ridetrackr.data.local.entity.UserWaitTimeReportEntity(
+                id = 2L,
+                parkId = "tripsdrill",
+                attractionId = "tripsdrill-karacho",
+                attractionName = "Karacho",
+                waitTimeMinutes = 55,
+                reportedAtMillis = testTime.toInstant().toEpochMilli() - 7200000L // 2 hours ago
+            )
+        )
+
+        val calibratedList = engine.generateAttractions("tripsdrill", dateTime = testTime, trainingReports = training)
+        val karachoCalibrated = calibratedList.first { it.name == "Karacho" }.waitTimeMinutes ?: 0
+
+        // Calibrated wait time must move towards the database training samples
+        assertTrue(
+            "Kalibrierte Wartezeit ($karachoCalibrated min) muss höher sein als die reine Theorie ($karachoBaseline min)",
+            karachoCalibrated > karachoBaseline
+        )
+    }
 }

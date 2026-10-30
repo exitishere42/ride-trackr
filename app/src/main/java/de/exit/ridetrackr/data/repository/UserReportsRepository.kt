@@ -77,6 +77,28 @@ class UserReportsRepository @Inject constructor(
         return reports.groupBy { it.attractionId }.mapValues { it.value.first() }
     }
 
+    suspend fun getAllParkReports(parkId: String): List<UserWaitTimeReportEntity> {
+        try {
+            val cloudDb = gitHubCloudDbApi.getLiveReportsRaw()
+            val parkCloudReports = cloudDb[parkId] ?: emptyMap()
+            for ((_, dto) in parkCloudReports) {
+                userReportsDao.insertReport(
+                    UserWaitTimeReportEntity(
+                        parkId = dto.parkId,
+                        attractionId = dto.attractionId,
+                        attractionName = dto.attractionName,
+                        waitTimeMinutes = dto.waitTimeMinutes,
+                        reportedAtMillis = dto.reportedAtMillis,
+                        note = dto.note
+                    )
+                )
+            }
+        } catch (_: Exception) {
+            // Offline fallback
+        }
+        return userReportsDao.getAllParkReports(parkId)
+    }
+
     suspend fun submitReport(
         parkId: String,
         attractionId: String,

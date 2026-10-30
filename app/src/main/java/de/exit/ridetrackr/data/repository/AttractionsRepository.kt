@@ -68,9 +68,17 @@ class AttractionsRepository @Inject constructor(
                 null
             }
 
+            // Ingest database reports as empirical training data
+            val trainingReports = try {
+                userReportsRepository.getAllParkReports(parkId)
+            } catch (_: Exception) {
+                emptyList()
+            }
+
             resolved = tripsdrillWaitTimeEngine.generateAttractions(
                 parkId = parkId,
-                onlineCrowdLevel = onlineCrowd
+                onlineCrowdLevel = onlineCrowd,
+                trainingReports = trainingReports
             )
         }
 

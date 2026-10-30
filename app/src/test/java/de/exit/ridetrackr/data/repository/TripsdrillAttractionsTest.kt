@@ -45,6 +45,7 @@ class TripsdrillAttractionsTest {
         override fun observeLatestReport(attractionId: String): Flow<UserWaitTimeReportEntity?> = flowOf(null)
         override suspend fun getLatestReport(attractionId: String): UserWaitTimeReportEntity? = null
         override suspend fun getRecentParkReports(parkId: String, minTimestamp: Long): List<UserWaitTimeReportEntity> = list
+        override suspend fun getAllParkReports(parkId: String): List<UserWaitTimeReportEntity> = list
         override fun observeAllReports(): Flow<List<UserWaitTimeReportEntity>> = flowOf(list)
         override suspend fun deleteReport(id: Long) {}
         override suspend fun pruneOldReports(olderThanMillis: Long) {}

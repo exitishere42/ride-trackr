@@ -25,6 +25,9 @@ interface UserReportsDao {
     @Query("SELECT * FROM user_wait_time_reports WHERE parkId = :parkId AND reportedAtMillis >= :minTimestamp ORDER BY reportedAtMillis DESC")
     suspend fun getRecentParkReports(parkId: String, minTimestamp: Long): List<UserWaitTimeReportEntity>
 
+    @Query("SELECT * FROM user_wait_time_reports WHERE parkId = :parkId ORDER BY reportedAtMillis DESC")
+    suspend fun getAllParkReports(parkId: String): List<UserWaitTimeReportEntity>
+
     @Query("SELECT * FROM user_wait_time_reports ORDER BY reportedAtMillis DESC")
     fun observeAllReports(): Flow<List<UserWaitTimeReportEntity>>
 

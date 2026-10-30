@@ -45,6 +45,10 @@ class UserReportsRepositoryTest {
             return list.filter { it.parkId == parkId && it.reportedAtMillis >= minTimestamp }
         }
 
+        override suspend fun getAllParkReports(parkId: String): List<UserWaitTimeReportEntity> {
+            return list.filter { it.parkId == parkId }
+        }
+
         override fun observeAllReports(): Flow<List<UserWaitTimeReportEntity>> {
             return flowOf(list)
         }

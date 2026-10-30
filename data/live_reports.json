@@ -4,45 +4,89 @@
       "parkId": "tripsdrill",
       "attractionId": "tripsdrill-karacho",
       "attractionName": "Karacho",
-      "waitTimeMinutes": 20,
-      "reportedAtMillis": 1793363145000,
-      "reportedAt": "2026-10-30 13:25:45",
+      "waitTimeMinutes": 40,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
       "date": "2026-10-30",
-      "time": "13:25:45",
-      "note": "Sonnig, normale Abfertigung"
+      "time": "17:10:00",
+      "note": "Lichtergaudi Nachtfahrten, beleuchtete Strecke"
     },
     "tripsdrill-mammut": {
       "parkId": "tripsdrill",
       "attractionId": "tripsdrill-mammut",
       "attractionName": "Mammut",
-      "waitTimeMinutes": 15,
-      "reportedAtMillis": 1793363145000,
-      "reportedAt": "2026-10-30 13:25:45",
+      "waitTimeMinutes": 30,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
       "date": "2026-10-30",
-      "time": "13:25:45",
-      "note": "Zwei-Zug-Betrieb"
+      "time": "17:10:00",
+      "note": "Hoher Andrang vor Drohnenshow"
     },
     "tripsdrill-hals-ueber-kopf": {
       "parkId": "tripsdrill",
       "attractionId": "tripsdrill-hals-ueber-kopf",
       "attractionName": "Hals-über-Kopf",
-      "waitTimeMinutes": 25,
-      "reportedAtMillis": 1793363145000,
-      "reportedAt": "2026-10-30 13:25:45",
+      "waitTimeMinutes": 45,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
       "date": "2026-10-30",
-      "time": "13:25:45",
-      "note": "Flotter Einlass"
+      "time": "17:10:00",
+      "note": "Sehr beliebt zur Dämmerung"
     },
     "tripsdrill-volldampf": {
       "parkId": "tripsdrill",
       "attractionId": "tripsdrill-volldampf",
       "attractionName": "Volldampf",
-      "waitTimeMinutes": 10,
-      "reportedAtMillis": 1793363145000,
-      "reportedAt": "2026-10-30 13:25:45",
+      "waitTimeMinutes": 25,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
       "date": "2026-10-30",
-      "time": "13:25:45",
-      "note": "Geringer Andrang"
+      "time": "17:10:00",
+      "note": "Familien-Highlight zur Lichtergaudi"
+    },
+    "tripsdrill-gsengte-sau": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-gsengte-sau",
+      "attractionName": "G'sengte Sau",
+      "waitTimeMinutes": 25,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
+      "date": "2026-10-30",
+      "time": "17:10:00",
+      "note": "Starker Zulauf am Abend"
+    },
+    "tripsdrill-tausendfuessler": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-tausendfuessler",
+      "attractionName": "Rasender Tausendfüßler",
+      "waitTimeMinutes": 20,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
+      "date": "2026-10-30",
+      "time": "17:10:00",
+      "note": "Herbstferien-Andrang"
+    },
+    "tripsdrill-hoehenflug": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-hoehenflug",
+      "attractionName": "Höhenflug",
+      "waitTimeMinutes": 20,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
+      "date": "2026-10-30",
+      "time": "17:10:00",
+      "note": "Schöne Aussicht auf beleuchteten Park"
+    },
+    "tripsdrill-donnerbalken": {
+      "parkId": "tripsdrill",
+      "attractionId": "tripsdrill-donnerbalken",
+      "attractionName": "Doppelter Donnerbalken",
+      "waitTimeMinutes": 15,
+      "reportedAtMillis": 1793376600000,
+      "reportedAt": "2026-10-30 17:10:00",
+      "date": "2026-10-30",
+      "time": "17:10:00",
+      "note": "Guter Durchlauf"
     }
   }
 }
