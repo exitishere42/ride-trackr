@@ -109,4 +109,16 @@ object NetworkModule {
             .build()
             .create(FirebaseRealtimeDbApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideGitHubCloudDbApi(okHttpClient: OkHttpClient, json: Json): de.exit.ridetrackr.data.remote.api.GitHubCloudDbApi {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl("https://raw.githubusercontent.com/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+            .create(de.exit.ridetrackr.data.remote.api.GitHubCloudDbApi::class.java)
+    }
 }

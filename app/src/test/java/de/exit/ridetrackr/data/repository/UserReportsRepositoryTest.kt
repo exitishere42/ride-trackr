@@ -4,6 +4,11 @@ import de.exit.ridetrackr.data.local.dao.UserReportsDao
 import de.exit.ridetrackr.data.local.entity.UserWaitTimeReportEntity
 import de.exit.ridetrackr.data.remote.api.FirebaseRealtimeDbApi
 import de.exit.ridetrackr.data.remote.api.FirebaseReportDto
+import de.exit.ridetrackr.data.remote.api.GitHubCloudDbApi
+import de.exit.ridetrackr.data.remote.api.GitHubFileContentDto
+import de.exit.ridetrackr.data.remote.api.GitHubUpdateContentRequestDto
+import de.exit.ridetrackr.data.remote.api.GitHubUpdateResponseDto
+import de.exit.ridetrackr.data.remote.api.LiveReportDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -75,9 +80,28 @@ class UserReportsRepositoryTest {
         }
     }
 
+    private val fakeGitHubCloudDbApi = object : GitHubCloudDbApi {
+        val cloudReports = mutableMapOf<String, MutableMap<String, LiveReportDto>>()
+
+        override suspend fun getLiveReportsRaw(): Map<String, Map<String, LiveReportDto>> {
+            return cloudReports
+        }
+
+        override suspend fun getFileMetadata(authHeader: String?): GitHubFileContentDto {
+            return GitHubFileContentDto(sha = "dummy_sha")
+        }
+
+        override suspend fun updateLiveReports(
+            authHeader: String,
+            request: GitHubUpdateContentRequestDto
+        ): GitHubUpdateResponseDto {
+            return GitHubUpdateResponseDto()
+        }
+    }
+
     @Test
     fun testSubmitAndPublishToFirebase() = runBlocking {
-        val repo = UserReportsRepository(fakeDao, fakeFirebaseApi)
+        val repo = UserReportsRepository(fakeDao, fakeFirebaseApi, fakeGitHubCloudDbApi)
 
         val id = repo.submitReport(
             parkId = "tripsdrill",
@@ -103,7 +127,7 @@ class UserReportsRepositoryTest {
 
     @Test
     fun testSyncOnlineReportsFromFirebase() = runBlocking {
-        val repo = UserReportsRepository(fakeDao, fakeFirebaseApi)
+        val repo = UserReportsRepository(fakeDao, fakeFirebaseApi, fakeGitHubCloudDbApi)
 
         // Simulate another user published an online wait time for Mammut to Firebase
         val now = System.currentTimeMillis()
@@ -122,5 +146,26 @@ class UserReportsRepositoryTest {
         val reports = repo.getRecentParkReports("tripsdrill", maxAgeHours = 1)
         assertTrue(reports.containsKey("tripsdrill-mammut"))
         assertEquals(35, reports["tripsdrill-mammut"]?.waitTimeMinutes)
+    }
+
+    @Test
+    fun testSyncOnlineReportsFromGitHubCloudDb() = runBlocking {
+        val repo = UserReportsRepository(fakeDao, fakeFirebaseApi, fakeGitHubCloudDbApi)
+
+        // Simulate live report in GitHub Cloud DB
+        val now = System.currentTimeMillis()
+        fakeGitHubCloudDbApi.cloudReports.getOrPut("tripsdrill") { mutableMapOf() }["tripsdrill-karacho"] = LiveReportDto(
+            parkId = "tripsdrill",
+            attractionId = "tripsdrill-karacho",
+            attractionName = "Karacho",
+            waitTimeMinutes = 20,
+            reportedAtMillis = now,
+            note = "Sonnig, normale Abfertigung"
+        )
+
+        val reports = repo.getRecentParkReports("tripsdrill", maxAgeHours = 1)
+        assertTrue(reports.containsKey("tripsdrill-karacho"))
+        assertEquals(20, reports["tripsdrill-karacho"]?.waitTimeMinutes)
+        assertEquals("Sonnig, normale Abfertigung", reports["tripsdrill-karacho"]?.note)
     }
 }

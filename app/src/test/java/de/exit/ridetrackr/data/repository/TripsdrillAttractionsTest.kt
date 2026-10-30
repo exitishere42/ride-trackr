@@ -60,9 +60,20 @@ class TripsdrillAttractionsTest {
         override suspend fun getAllReports(): Map<String, Map<String, de.exit.ridetrackr.data.remote.api.FirebaseReportDto>>? = null
     }
 
+    private val fakeGitHubCloudDbApi = object : de.exit.ridetrackr.data.remote.api.GitHubCloudDbApi {
+        override suspend fun getLiveReportsRaw(): Map<String, Map<String, de.exit.ridetrackr.data.remote.api.LiveReportDto>> = emptyMap()
+        override suspend fun getFileMetadata(authHeader: String?): de.exit.ridetrackr.data.remote.api.GitHubFileContentDto =
+            de.exit.ridetrackr.data.remote.api.GitHubFileContentDto(sha = "dummy")
+        override suspend fun updateLiveReports(
+            authHeader: String,
+            request: de.exit.ridetrackr.data.remote.api.GitHubUpdateContentRequestDto
+        ): de.exit.ridetrackr.data.remote.api.GitHubUpdateResponseDto =
+            de.exit.ridetrackr.data.remote.api.GitHubUpdateResponseDto()
+    }
+
     @Test
     fun testGetAttractions_returnsTripsdrillDynamicList() = runBlocking {
-        val userReportsRepo = UserReportsRepository(fakeUserReportsDao, fakeFirebaseApi)
+        val userReportsRepo = UserReportsRepository(fakeUserReportsDao, fakeFirebaseApi, fakeGitHubCloudDbApi)
         val repo = AttractionsRepository(
             themeParksApi = fakeThemeParks,
             wartezeitenApi = fakeWartezeiten,
@@ -83,7 +94,7 @@ class TripsdrillAttractionsTest {
 
     @Test
     fun testGetAttractions_appliesUserReportWhenAvailable() = runBlocking {
-        val userReportsRepo = UserReportsRepository(fakeUserReportsDao, fakeFirebaseApi)
+        val userReportsRepo = UserReportsRepository(fakeUserReportsDao, fakeFirebaseApi, fakeGitHubCloudDbApi)
         // Add a recent report for Karacho (40 min)
         fakeUserReportsDao.list.add(
             UserWaitTimeReportEntity(
