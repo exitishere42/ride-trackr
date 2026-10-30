@@ -89,7 +89,7 @@ class TripsdrillAttractionsTest {
         assertTrue(attractions.any { it.name == "Karacho" })
         assertTrue(attractions.any { it.name == "Hals-über-Kopf" })
         assertTrue(attractions.any { it.name == "Volldampf" })
-        assertTrue(attractions.all { it.comparisonNote?.contains("Dynamisch") == true })
+        assertTrue(attractions.all { it.comparisonNote?.contains("Schätzung") == true })
     }
 
     @Test

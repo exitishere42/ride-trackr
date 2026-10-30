@@ -16,38 +16,65 @@ class WikipediaRepository @Inject constructor(
 ) {
     private val cache = ConcurrentHashMap<String, WikipediaRideData>()
 
+    private val knownWikiTitles = mapOf(
+        "karacho" to "Karacho (Achterbahn)",
+        "mammut" to "Mammut (Erlebnispark Tripsdrill)",
+        "hals-über-kopf" to "Hals-über-Kopf",
+        "volldampf" to "Volldampf (Achterbahn)",
+        "g'sengte sau" to "G’sengte Sau",
+        "voltron" to "Voltron Nevera",
+        "silver star" to "Silver Star (Europa-Park)",
+        "blue fire" to "Blue Fire Megacoaster",
+        "wodan" to "Wodan – Timburcoaster",
+        "taron" to "Taron (Achterbahn)",
+        "black mamba" to "Black Mamba (Phantasialand)",
+        "f.l.y." to "F.L.Y. (Achterbahn)",
+        "colossos" to "Colossos – Kampf der Giganten",
+        "flug der dämonen" to "Flug der Dämonen"
+    )
+
     suspend fun getRideData(attractionName: String, parkName: String? = null): WikipediaRideData? = withContext(Dispatchers.IO) {
         val cacheKey = "$attractionName::$parkName".lowercase().trim()
         cache[cacheKey]?.let { return@withContext it }
 
         try {
-            // 1. Try finding Wikipedia article title
             val cleanAttraction = attractionName
                 .replace(Regex("\\s*\\(.*?\\)"), "") // remove parenthetical notes
                 .trim()
+            val cleanLower = cleanAttraction.lowercase()
 
-            val searchQueries = listOfNotNull(
-                if (!parkName.isNullOrBlank()) "$cleanAttraction $parkName" else null,
-                "$cleanAttraction Achterbahn",
-                cleanAttraction
-            )
+            // 1. Direct lookup in curated map
+            var matchedTitle: String? = knownWikiTitles.entries.firstOrNull {
+                cleanLower.contains(it.key) || it.key.contains(cleanLower)
+            }?.value
 
-            var matchedTitle: String? = null
-            for (query in searchQueries) {
-                val searchRes = wikipediaApi.search(query)
-                val items = searchRes.query?.search ?: emptyList()
-                if (items.isNotEmpty()) {
-                    // Try to find the most relevant title
-                    val best = items.firstOrNull { item ->
-                        val lower = item.title.lowercase()
-                        val attrLower = cleanAttraction.lowercase()
-                        (lower.contains(attrLower) || attrLower.contains(lower)) &&
-                                !lower.contains("liste") && !lower.contains("kategorie")
-                    } ?: items.firstOrNull { !it.title.lowercase().startsWith("liste") }
+            // 2. If not in curated list, search Wikipedia with strict title validation
+            if (matchedTitle == null) {
+                val searchQueries = listOfNotNull(
+                    if (!parkName.isNullOrBlank()) "$cleanAttraction $parkName" else null,
+                    "$cleanAttraction Achterbahn",
+                    cleanAttraction
+                )
 
-                    if (best != null) {
-                        matchedTitle = best.title
-                        break
+                for (query in searchQueries) {
+                    val searchRes = wikipediaApi.search(query)
+                    val items = searchRes.query?.search ?: emptyList()
+                    if (items.isNotEmpty()) {
+                        val best = items.firstOrNull { item ->
+                            val titleLower = item.title.lowercase()
+                            (titleLower.contains(cleanLower) || cleanLower.contains(titleLower)) &&
+                                    !titleLower.contains("liste") &&
+                                    !titleLower.contains("kategorie") &&
+                                    !titleLower.contains("modell") &&
+                                    !titleLower.startsWith("erlebnispark") &&
+                                    !titleLower.startsWith("europa-park") &&
+                                    !titleLower.startsWith("phantasialand")
+                        }
+
+                        if (best != null) {
+                            matchedTitle = best.title
+                            break
+                        }
                     }
                 }
             }

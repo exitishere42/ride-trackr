@@ -76,6 +76,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.exit.ridetrackr.data.model.AttractionDetails
 import de.exit.ridetrackr.data.model.AttractionStatus
 import de.exit.ridetrackr.data.model.CoasterVisualType
@@ -128,48 +129,60 @@ fun AttractionDetailSheet(
                 .verticalScroll(rememberScrollState())
                 .padding(20.dp)
         ) {
-            // Wikipedia Hero Image (if available)
-            if (wikiData?.imageUrl != null) {
+            var isImageLoaded by remember(wikiData?.imageUrl) { mutableStateOf(false) }
+            var isImageError by remember(wikiData?.imageUrl) { mutableStateOf(false) }
+
+            // Wikipedia Hero Image (only rendered when available and successfully loaded)
+            if (wikiData?.imageUrl != null && !isImageError) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(210.dp)
+                        .height(170.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                 ) {
                     AsyncImage(
-                        model = wikiData?.imageUrl,
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(wikiData?.imageUrl)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = attraction.name,
                         contentScale = ContentScale.Crop,
+                        onSuccess = { isImageLoaded = true },
+                        onError = { isImageError = true },
                         modifier = Modifier.fillMaxSize()
                     )
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = Color.Black.copy(alpha = 0.65f),
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(8.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    if (isImageLoaded) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color.Black.copy(alpha = 0.65f),
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(8.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Image,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(12.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "Wikipedia",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Color.White
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Image,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = "Wikipedia",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White
+                                )
+                            }
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                if (isImageLoaded) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
 
             // Header with Hero Icon & Close Button
@@ -182,7 +195,7 @@ fun AttractionDetailSheet(
                     modifier = Modifier.weight(1f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (wikiData?.imageUrl == null) {
+                    if (wikiData?.imageUrl == null || isImageError || !isImageLoaded) {
                         Box(
                             modifier = Modifier
                                 .size(52.dp)
@@ -449,7 +462,7 @@ fun AttractionDetailSheet(
                         SpecItem(
                             icon = Icons.Default.Height,
                             label = strings.minHeight,
-                            value = "ab ${details.minHeightCm} cm"
+                            value = if (isEnglish) "from ${details.minHeightCm} cm" else "ab ${details.minHeightCm} cm"
                         )
 
                         // Kategorie / Modell

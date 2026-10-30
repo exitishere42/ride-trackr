@@ -85,4 +85,29 @@ class WikipediaRepositoryTest {
         assertEquals("2013", result?.openingDate)
         assertTrue(result?.description?.contains("Karacho") == true)
     }
+
+    @Test
+    fun testGetRideData_returnsNullForMismatchedSearchHits() = runBlocking {
+        val mismatchedApi = object : WikipediaApi {
+            override suspend fun search(query: String): WikipediaSearchResponse {
+                // Return unrelated articles like generic coaster model or park article
+                return WikipediaSearchResponse(
+                    query = WikipediaSearchResultQuery(
+                        search = listOf(
+                            WikipediaSearchItemDto(title = "Tivoli (Achterbahnmodell)"),
+                            WikipediaSearchItemDto(title = "Erlebnispark Tripsdrill")
+                        )
+                    )
+                )
+            }
+            override suspend fun getSummary(title: String): WikipediaSummaryDto = WikipediaSummaryDto(title = title)
+            override suspend fun getArticleContent(title: String): WikipediaContentResponse = WikipediaContentResponse()
+        }
+
+        val repo = WikipediaRepository(mismatchedApi)
+        val result = repo.getRideData("Rasender Tausendfüßler", "Erlebnispark Tripsdrill")
+
+        // Must be null to avoid displaying wrong Wikipedia text!
+        org.junit.Assert.assertNull(result)
+    }
 }

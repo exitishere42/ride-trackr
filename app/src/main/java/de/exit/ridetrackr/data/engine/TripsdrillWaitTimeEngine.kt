@@ -95,26 +95,10 @@ class TripsdrillWaitTimeEngine @Inject constructor() {
             1.0
         }
 
-        val noteText = buildString {
-            append("Dynamisch: ")
-            when (month) {
-                in 6..8 -> append("Sommer ")
-                in 3..5 -> append("Frühjahr ")
-                in 9..10 -> append("Herbst ")
-                else -> append("Winter ")
-            }
-            when {
-                hour < 9 -> append("• Vor Parköffnung (ab 09:00 Uhr)")
-                hour == 9 -> append("• Morgen (09-10 Uhr)")
-                hour in 10..11 -> append("• Vormittag (10-12 Uhr)")
-                hour in 12..13 -> append("• Mittags-Peak (12-14 Uhr)")
-                hour in 14..16 -> append("• Nachmittag (14-17 Uhr)")
-                hour == 17 -> append("• Vor Parkschluss (17-18 Uhr)")
-                else -> append("• Nach Parkschluss (18:00 Uhr)")
-            }
-            if (onlineCrowdLevel != null && onlineCrowdLevel > 0) {
-                append(" • Online-Crowd: ${onlineCrowdLevel.toInt()}%")
-            }
+        val noteText = if (onlineCrowdLevel != null && onlineCrowdLevel > 0) {
+            "Live-Schätzung • ${onlineCrowdLevel.toInt()}% Auslastung"
+        } else {
+            "Live-Schätzung"
         }
 
         val nowMillis = System.currentTimeMillis()
