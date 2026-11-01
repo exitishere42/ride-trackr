@@ -122,15 +122,24 @@ fun AttractionDetailSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
-        dragHandle = { BottomSheetDefaults.DragHandle() }
+        dragHandle = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(top = 8.dp, bottom = 4.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                BottomSheetDefaults.DragHandle()
+            }
+        }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 28.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 28.dp)
         ) {
             var isImageLoaded by remember(wikiData?.imageUrl) { mutableStateOf(false) }
             var isImageError by remember(wikiData?.imageUrl) { mutableStateOf(false) }
